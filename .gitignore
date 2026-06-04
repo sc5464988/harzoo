@@ -15,5 +15,3 @@ venv/
 dist/
 build/
 site/
-CLAUDE.md
-claude_code_env.sh
