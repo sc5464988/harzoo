@@ -63,6 +63,7 @@ class EditTool(Tool):
     """精确替换工具：old_string 必须完全匹配，适合可控小范围修改。"""
 
     name = "Edit"
+    danger_level = 1
     description = "Replace exact text in a file. old_string must match exactly."
     parameters = {
         "properties": {

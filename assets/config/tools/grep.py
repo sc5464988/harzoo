@@ -47,6 +47,7 @@ class GrepTool(Tool):
     """正则文本搜索工具，适合定位代码片段，不负责语义理解。"""
 
     name = "Grep"
+    danger_level = 0
     description = "Search for regex pattern in files."
     parameters = {
         "properties": {

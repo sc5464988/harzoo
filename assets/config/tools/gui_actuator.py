@@ -156,6 +156,7 @@ class GuiActuatorTool(Tool):
     """桌面操作工具，执行点击/输入/快捷键等 GUI 动作。"""
 
     name = "GuiActuator"
+    danger_level = 1
     description = "Execute desktop mouse and keyboard actions from explicit arguments."
     parameters = {
         "type": "object",

@@ -10,6 +10,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Container, ScrollableContainer
 from textual.widgets import Static, TextArea
 
+from harzoo.agent.engine import PermissionGate
 from .controller import AgentController
 from .widgets import BannerMessage, ChatInputTextArea
 
@@ -69,10 +70,10 @@ class AgentApp(App[None]):
         ("q", "quit", "Quit"),
     ]
 
-    def __init__(self, queue_in: Queue, queue_out: Queue, **kwargs) -> None:
+    def __init__(self, queue_in: Queue, queue_out: Queue, *, permission_gate: PermissionGate | None = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.queue_out = queue_out
-        self.controller = AgentController(app=self, queue_in=queue_in)
+        self.controller = AgentController(app=self, queue_in=queue_in, permission_gate=permission_gate)
 
     def compose(self) -> ComposeResult:
         with ScrollableContainer(id="chat"):
@@ -108,6 +109,6 @@ class AgentApp(App[None]):
         self.exit()
 
 
-def run_tui(queue_in: Queue, queue_out: Queue) -> None:
+def run_tui(queue_in: Queue, queue_out: Queue, *, permission_gate: PermissionGate | None = None) -> None:
     """启动 TUI 应用。"""
-    AgentApp(queue_in=queue_in, queue_out=queue_out).run()
+    AgentApp(queue_in=queue_in, queue_out=queue_out, permission_gate=permission_gate).run()

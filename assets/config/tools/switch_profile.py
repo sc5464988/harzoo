@@ -80,6 +80,7 @@ class SwitchProfileTool(Tool):
     """主 profile 切换工具：切换模型、提示词与工具集合。"""
 
     name = "SwitchProfile"
+    danger_level = 1
     description = (
         "Switch the main agent to a different profile (markdown under the agents config directory). "
         "Updates model, API endpoint, system prompt, and the tool list exposed to the model for subsequent turns. "

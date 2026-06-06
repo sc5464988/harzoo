@@ -15,6 +15,7 @@ class QueueoutEventName(StrEnum):
     THINKING_END = "thinking_end"
     TOOL_START = "tool_start"
     TOOL_END = "tool_end"
+    TOOL_PERMISSION_REQUIRED = "tool_permission_required"
     ASSISTANT_MESSAGE = "assistant_message"
     CONTEXT_COMPACTED = "context_compacted"
     ERROR = "error"
@@ -60,6 +61,9 @@ class QueueoutEmitter:
 
     def emit_context_compacted(self, *, prompt_tokens: int, max_context_tokens: int, before_messages: int, after_messages: int) -> None:
         self._emit(QueueoutEventName.CONTEXT_COMPACTED, {"prompt_tokens": int(prompt_tokens), "max_context_tokens": int(max_context_tokens), "before_messages": int(before_messages), "after_messages": int(after_messages)})
+
+    def emit_tool_permission_required(self, tool_name: str, tool_args: str, danger_level: int) -> None:
+        self._emit(QueueoutEventName.TOOL_PERMISSION_REQUIRED, {"tool_name": tool_name, "tool_args": tool_args, "danger_level": danger_level})
 
     def emit_error(self, message: str, *, retriable: bool = False, details: dict[str, Any] | None = None) -> None:
         self._emit(QueueoutEventName.ERROR, {"message": message}, error={"message": message, "retriable": retriable, "details": details or {}})

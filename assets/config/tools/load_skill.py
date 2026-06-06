@@ -61,6 +61,7 @@ class LoadSkillTool(Tool):
     """按名称加载允许的 Skill 正文，避免一次性加载全部技能内容。"""
 
     name = "LoadSkill"
+    danger_level = 0
     description = (
         "Load full instructions for an allowed skill by name from the Allowed Skills catalog. "
         "Call when the user's task matches a skill description, before proceeding."

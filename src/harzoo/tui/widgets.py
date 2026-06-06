@@ -9,6 +9,7 @@ from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical
 from textual.events import Click, Key
 from textual.message import Message
+from textual.screen import ModalScreen
 from textual.widgets import Button, Markdown, Static
 from textual.widgets import TextArea
 
@@ -295,3 +296,83 @@ class ErrorMessage(CopyableMessage):
 
     def compose(self) -> ComposeResult:
         yield Static(self._copy_text, markup=False)
+
+
+class PermissionScreen(ModalScreen[bool]):
+    """工具权限确认弹窗：engine 线程阻塞等待，用户 Allow/Deny 后放行。"""
+
+    DEFAULT_CSS = """
+    PermissionScreen {
+        align: center middle;
+    }
+    #perm-dialog {
+        width: 60;
+        height: auto;
+        padding: 2 3;
+        background: $surface;
+        border: thick $warning;
+    }
+    #perm-title {
+        text-style: bold;
+        color: $warning;
+        content-align: center middle;
+        width: 100%;
+        height: 1;
+        margin-bottom: 1;
+    }
+    #perm-desc {
+        width: 100%;
+        height: auto;
+        margin-bottom: 1;
+    }
+    #perm-args {
+        width: 100%;
+        height: auto;
+        max-height: 8;
+        padding: 1;
+        margin-bottom: 2;
+        background: $boost;
+        color: $text-muted;
+        overflow: auto;
+    }
+    #perm-buttons {
+        width: 100%;
+        height: auto;
+        align: center middle;
+    }
+    #perm-buttons Button {
+        margin: 0 1;
+        min-width: 16;
+    }
+    """
+
+    BINDINGS = [
+        ("y", "allow", "Allow"),
+        ("n", "deny", "Deny"),
+    ]
+
+    def __init__(self, tool_name: str, tool_args: str) -> None:
+        super().__init__()
+        self._tool_name = tool_name
+        self._tool_args = tool_args
+
+    def compose(self) -> ComposeResult:
+        with Container(id="perm-dialog"):
+            yield Static("⚠ Tool Permission Required", id="perm-title")
+            yield Static(f"[bold]{self._tool_name}[/bold] wants to execute. Allow once = auto-allow for rest of session:", id="perm-desc")
+            yield Static(self._tool_args[:500], id="perm-args", markup=False)
+            with Horizontal(id="perm-buttons"):
+                yield Button("Allow [y]", variant="success", id="perm-allow")
+                yield Button("Deny [n]", variant="error", id="perm-deny")
+
+    def action_allow(self) -> None:
+        self.dismiss(True)
+
+    def action_deny(self) -> None:
+        self.dismiss(False)
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "perm-allow":
+            self.dismiss(True)
+        elif event.button.id == "perm-deny":
+            self.dismiss(False)

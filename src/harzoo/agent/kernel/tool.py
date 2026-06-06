@@ -58,6 +58,7 @@ class Tool:
     name: str
     description: str
     parameters: dict[str, Any]
+    danger_level: int = 0  # 0=safe(无需确认), 1=dangerous(需用户确认)
 
     def execute(self, *args: Any, ctx: Context | None = None, **kwargs: Any) -> Any:
         raise NotImplementedError

@@ -18,6 +18,7 @@ class ToolHub:
         self._tools_root = tools_root.resolve()
         self._schemas: dict[str, dict[str, Any]] = {}
         self._handlers: dict[str, Callable[[dict[str, Any], Context], Any]] = {}
+        self._danger_levels: dict[str, int] = {}
         self._load(tool_names)
 
     def _load(self, tool_names: Sequence[str]) -> None:
@@ -27,6 +28,7 @@ class ToolHub:
         for tool in tools:
             self._handlers[tool.name] = lambda args, ctx, t=tool: t.execute(**args, ctx=ctx)
             self._schemas[tool.name] = tool.as_openai_schema()
+            self._danger_levels[tool.name] = tool.danger_level
 
     def tool_executor(self, tool_name: str, tool_args: str, ctx: Context) -> ToolResult:
         """执行工具"""
@@ -58,3 +60,6 @@ class ToolHub:
 
     def list_tools(self) -> list[str]:
         return list(self._handlers.keys())
+
+    def get_tool_danger_level(self, name: str) -> int:
+        return self._danger_levels.get(name, 1)

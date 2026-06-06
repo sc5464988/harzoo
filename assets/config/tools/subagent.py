@@ -90,6 +90,7 @@ class SubtaskAgentTool(Tool):
     """子任务委派工具：用子 profile 同步执行任务并回收最终结果。"""
 
     name = "SubtaskAgent"
+    danger_level = 1
     description = (
         "Run a delegated subtask with a dedicated profile in a synchronous nested "
         "agent loop, then return the final assistant output."

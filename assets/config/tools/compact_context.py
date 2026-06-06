@@ -49,6 +49,7 @@ class CompactContextTool(Tool):
     """上下文压缩工具：总结旧消息并保留最近若干轮，减少上下文占用。"""
 
     name = "CompactContext"
+    danger_level = 0
     description = (
         "Summarize older messages in the current session into one assistant summary block and keep the "
         f"last few messages verbatim (default {_DEFAULT_KEEP_TAIL}). Use when the context window is tight."

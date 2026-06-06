@@ -26,6 +26,7 @@ class DocumentEditTool(Tool):
     """结构化文档编辑工具，按操作指令修改文档而非自由文本替换。"""
 
     name = "DocumentEdit"
+    danger_level = 1
     description = "Edit structured documents with explicit operations for common formats."
     parameters = {
         "type": "object",

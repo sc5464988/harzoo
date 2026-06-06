@@ -19,6 +19,7 @@ class GuiScreenshotTool(Tool):
     """桌面截图工具，用于给模型提供当前 GUI 观察信息。"""
 
     name = "GuiScreenshot"
+    danger_level = 1
     description = "Capture desktop screenshot for GUI observation and planning."
     parameters = {"type": "object", "properties": {"output_dir": {"type": "string", "description": "Optional output directory."}, "filename": {"type": "string", "description": "Optional file name (png)."}}}
 

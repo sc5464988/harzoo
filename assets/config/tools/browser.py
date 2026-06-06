@@ -804,6 +804,7 @@ class BrowserTool(Tool):
     """浏览器自动化工具，适合需要点击/输入/页面导航的网页任务。"""
 
     name = "Browser"
+    danger_level = 1
     description = (
         "Native Playwright web automation with snapshot/ref actions for deterministic "
         "LLM-driven browser control. "

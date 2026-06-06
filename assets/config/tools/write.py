@@ -48,6 +48,7 @@ class WriteTool(Tool):
     """文件写入工具：按 UTF-8 覆盖写入，可自动创建父目录。"""
 
     name = "Write"
+    danger_level = 1
     description = "Write content to a file. Creates parent directories if needed."
     parameters = {
         "properties": {

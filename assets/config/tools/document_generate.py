@@ -24,6 +24,7 @@ class DocumentGenerateTool(Tool):
     """文档生成工具：根据结构化载荷创建目标格式文档。"""
 
     name = "DocumentGenerate"
+    danger_level = 0
     description = "Generate new documents for common formats with explicit payloads."
     parameters = {
         "type": "object",

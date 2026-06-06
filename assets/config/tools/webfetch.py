@@ -36,6 +36,7 @@ class WebFetchTool(Tool):
     """从网页抓取可读文本，适合检索资料，不适合需要浏览器交互的场景。"""
 
     name = "WebFetch"
+    danger_level = 1
     description = "Fetch and extract text content from a URL. Returns readable text from web pages."
     parameters = {
         "properties": {

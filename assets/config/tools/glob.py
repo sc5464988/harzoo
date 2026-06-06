@@ -23,6 +23,7 @@ class GlobTool(Tool):
     """文件名匹配工具：按 glob 模式查找路径，不做内容检索。"""
 
     name = "Glob"
+    danger_level = 0
     description = "Find files matching a glob pattern."
     parameters = {
         "properties": {

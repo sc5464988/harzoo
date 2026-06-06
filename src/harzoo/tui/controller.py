@@ -12,6 +12,7 @@ from textual.containers import ScrollableContainer
 from textual.widgets import Static, TextArea
 
 from harzoo.agent.components import QueueoutEventName
+from harzoo.agent.engine import PermissionGate
 from harzoo.agent.kernel.message import user_message
 from .processing import (
     IMAGE_PLACEHOLDER_PATTERN,
@@ -20,7 +21,7 @@ from .processing import (
     replace_image_paths_with_placeholders,
     sync_attachments_with_placeholders,
 )
-from .widgets import AgentActivityLine, AssistantMessage, ErrorMessage, ToolCallRow, UserMessage
+from .widgets import AgentActivityLine, AssistantMessage, ErrorMessage, PermissionScreen, ToolCallRow, UserMessage
 
 EventHandler = Callable[[dict[str, Any], dict[str, Any], ScrollableContainer], None]
 
@@ -28,9 +29,10 @@ EventHandler = Callable[[dict[str, Any], dict[str, Any], ScrollableContainer], N
 class AgentController:
     """控制 TUI 交互与出站事件渲染。"""
 
-    def __init__(self, app: App[None], queue_in: Queue) -> None:
+    def __init__(self, app: App[None], queue_in: Queue, *, permission_gate: PermissionGate | None = None) -> None:
         self.app = app
         self.queue_in = queue_in
+        self._permission_gate = permission_gate
         self._tool_row_by_call_id: dict[str, ToolCallRow] = {}
         self._activity_line_widget: AgentActivityLine | None = None
         self._previous_raw_input = ""
@@ -45,6 +47,7 @@ class AgentController:
             QueueoutEventName.LLM_READY: self._handle_llm_ready_event,
             QueueoutEventName.THINKING_START: self._handle_thinking_started_event,
             QueueoutEventName.THINKING_END: self._handle_thinking_finished_event,
+            QueueoutEventName.TOOL_PERMISSION_REQUIRED: self._handle_tool_permission_required_event,
             QueueoutEventName.ASSISTANT_MESSAGE: self._handle_assistant_message_event,
             QueueoutEventName.CONTEXT_COMPACTED: self._handle_context_compacted_event,
             QueueoutEventName.TOOL_START: self._handle_tool_started_event,
@@ -243,6 +246,23 @@ class AgentController:
         tool_call_id = str(payload.get("tool_call_id", ""))
         if tool_row_widget := self._tool_row_by_call_id.pop(tool_call_id, None):
             tool_row_widget.mark_completed(bool(payload.get("ok")), str(payload.get("tool_result", "")))
+
+    def _handle_tool_permission_required_event(
+        self,
+        payload: dict[str, Any],
+        _: dict[str, Any],
+        __: ScrollableContainer,
+    ) -> None:
+        gate = self._permission_gate
+        if gate is None:
+            return
+        tool_name = str(payload.get("tool_name", "?"))
+        tool_args = str(payload.get("tool_args", ""))
+        self._remove_activity_line()
+        self.app.push_screen(
+            PermissionScreen(tool_name, tool_args),
+            callback=lambda granted: gate.grant(tool_name) if granted else gate.deny(),
+        )
 
     def _handle_error_event(
         self,

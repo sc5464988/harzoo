@@ -63,6 +63,7 @@ class ReadTool(Tool):
     """文件读取工具，支持按行窗口读取，避免一次返回超长内容。"""
 
     name = "Read"
+    danger_level = 0
     description = "Read file contents. Paths are relative to workspace unless absolute."
     parameters = {
         "properties": {

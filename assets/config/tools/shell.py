@@ -100,6 +100,7 @@ class ShellTool(Tool):
     """命令执行工具：Windows 固定 PowerShell，macOS/Linux 固定 Bash。"""
 
     name = "Shell"
+    danger_level = 1
     description = (
         "Run shell commands with fixed shell syntax."
         " Windows only accepts PowerShell syntax; macOS/Linux only accepts Bash syntax."

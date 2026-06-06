@@ -33,6 +33,7 @@ class DocumentReadTool(Tool):
     """文档读取工具：将多种文档格式统一转换为文本/结构化输出。"""
 
     name = "DocumentRead"
+    danger_level = 0
     description = "Read common documents (pdf/docx/xlsx/xls/pptx/csv/txt/json/yaml/xml/html) as text, markdown, or structured output."
     parameters = {
         "type": "object",
